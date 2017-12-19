@@ -34,27 +34,31 @@ final class UserController{
         //        let bytes = try! Data(contentsOf: url)
         //
         //        let content = try! String(contentsOf: url)
-        //
+        
+        let user = try req.user()
         guard let filebytes = req.formData?["picture"]?.part.body else {
             throw Abort(.badRequest, metadata: "No file in request")
         }
         let directoryUrl = URL(fileURLWithPath: "Resources/User/")
-        
         do {
             try FileManager.default.createDirectory(at: directoryUrl, withIntermediateDirectories: true, attributes: nil)
         } catch {
             print(error.localizedDescription)
         }
-        
-        let imageUrl = directoryUrl.appendingPathComponent("ciaone2.png", isDirectory: false)
+        let imageUrl = directoryUrl.appendingPathComponent(user.userName + ".png", isDirectory: false)
         let datafilebytes = Data(bytes: filebytes)
         try datafilebytes.write(to: imageUrl)
-        
-        
         return Status.ok
-        
     }
+    
+//    func getPicture(req: Request) throws -> ResponseRepresentable{
+//        
+//    }
 }
+
+
+
+
 
 extension Request {
     func newUser() throws -> User {
