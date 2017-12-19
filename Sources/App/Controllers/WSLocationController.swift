@@ -19,6 +19,7 @@ class WSLocationController {
 //        try socket.send("Hello, \(user.userName)!")
         let pingTimer = keepSocketAlive(socket)
         
+
         
         socket.onText = { webSocket, message in
             let json = try JSON(bytes: message.makeBytes())

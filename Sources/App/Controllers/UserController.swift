@@ -27,6 +27,23 @@ final class UserController{
         }
         return newUser
     }
+    
+    func postPicture(req: Request) throws  -> ResponseRepresentable {
+        //        let url = URL(fileURLWithPath: "/Users/marco/")
+        //        let bytes = try! Data(contentsOf: url)
+        //
+        //        let content = try! String(contentsOf: url)
+        //
+        guard let filebytes = req.formData?["image"]?.part.body else {
+            throw Abort(.badRequest, metadata: "No file in request")
+        }
+        //
+        //        let datafilebytes = Data(bytes: filebytes)
+        //        try datafilebytes.write(to: url)
+        
+        return "Status.ok"
+        
+    }
 }
 
 extension Request {
