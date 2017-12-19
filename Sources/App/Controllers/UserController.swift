@@ -9,6 +9,7 @@ import Vapor
 import SQLite
 import FluentProvider
 import HTTP
+import Foundation
 
 final class UserController{
     
@@ -34,14 +35,23 @@ final class UserController{
         //
         //        let content = try! String(contentsOf: url)
         //
-        guard let filebytes = req.formData?["image"]?.part.body else {
+        guard let filebytes = req.formData?["picture"]?.part.body else {
             throw Abort(.badRequest, metadata: "No file in request")
         }
-        //
-        //        let datafilebytes = Data(bytes: filebytes)
-        //        try datafilebytes.write(to: url)
+        let directoryUrl = URL(fileURLWithPath: "Resources/User/")
         
-        return "Status.ok"
+        do {
+            try FileManager.default.createDirectory(at: directoryUrl, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        let imageUrl = directoryUrl.appendingPathComponent("ciaone2.png", isDirectory: false)
+        let datafilebytes = Data(bytes: filebytes)
+        try datafilebytes.write(to: imageUrl)
+        
+        
+        return Status.ok
         
     }
 }
