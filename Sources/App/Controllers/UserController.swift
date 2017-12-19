@@ -51,9 +51,12 @@ final class UserController{
         return Status.ok
     }
     
-//    func getPicture(req: Request) throws -> ResponseRepresentable{
-//        
-//    }
+    func getPicture(req: Request) throws -> ResponseRepresentable{
+        let username = try req.parameters.next(String.self)
+        let url = URL(fileURLWithPath: "Resources/User/" + username + ".png")
+        return try Data(contentsOf: url)
+    
+    }
 }
 
 

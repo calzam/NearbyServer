@@ -14,6 +14,7 @@ extension Droplet {
         let userController = UserController()
         get("user", User.parameter,  handler: userController.get)
         post("user", handler: userController.post)
+        get("user", "picture", String.parameter, handler: userController.getPicture)
     }
 
     private func setUpLoginRoutes(){
