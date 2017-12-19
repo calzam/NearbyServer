@@ -7,6 +7,7 @@
 
 import Vapor
 import Foundation
+import Dispatch
 
 class WSLocationController {
     
