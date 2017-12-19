@@ -14,7 +14,6 @@ extension Droplet {
         let userController = UserController()
         get("user", User.parameter,  handler: userController.get)
         post("user", handler: userController.post)
-        post("user/picture", handler: userController.postPicture)
     }
 
     private func setUpLoginRoutes(){
@@ -24,10 +23,12 @@ extension Droplet {
     }
 
     private func setupTokenProtectedRoutes() {
+        let userController = UserController()
         let tokenMiddleware = grouped([TokenAuthenticationMiddleware(User.self)])
         tokenMiddleware.get("me") { req in
             return try req.user()
         }
+        tokenMiddleware.post("user", "picture", handler: userController.postPicture)
     }
 }
 
