@@ -39,7 +39,7 @@ struct Coordinate {
         return (-bound...bound).contains(value)
     }
     
-    //Expression in meters
+    //Express in meters
     static func --(lhs: Coordinate, rhs: Coordinate) -> Double {
         let radius = 6367444.7
         
@@ -68,7 +68,6 @@ extension Double {
 
 extension Coordinate: JSONConvertible {
     
-    //Do not include the hashedPassword!
     func makeJSON() throws -> JSON {
         var json = JSON()
         try json.set(Keys.latitude, latitude)

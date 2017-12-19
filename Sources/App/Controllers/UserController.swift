@@ -13,6 +13,9 @@ import Foundation
 
 final class UserController{
     
+    let imageExtantion =  ".jpg"
+    let userPicturepath = "Resources/User/"
+    
     func get(req: Request) throws -> ResponseRepresentable {
         let fethchedUser = try req.parameters.next(User.self)
         
@@ -30,22 +33,17 @@ final class UserController{
     }
     
     func postPicture(req: Request) throws  -> ResponseRepresentable {
-        //        let url = URL(fileURLWithPath: "/Users/marco/")
-        //        let bytes = try! Data(contentsOf: url)
-        //
-        //        let content = try! String(contentsOf: url)
-        
         let user = try req.user()
         guard let filebytes = req.formData?["picture"]?.part.body else {
             throw Abort(.badRequest, metadata: "No file in request")
         }
-        let directoryUrl = URL(fileURLWithPath: "Resources/User/")
+        let directoryUrl = URL(fileURLWithPath: userPicturepath)
         do {
             try FileManager.default.createDirectory(at: directoryUrl, withIntermediateDirectories: true, attributes: nil)
         } catch {
             print(error.localizedDescription)
         }
-        let imageUrl = directoryUrl.appendingPathComponent(user.userName + ".png", isDirectory: false)
+        let imageUrl = directoryUrl.appendingPathComponent(user.userName + imageExtantion, isDirectory: false)
         let datafilebytes = Data(bytes: filebytes)
         try datafilebytes.write(to: imageUrl)
         return Status.ok
@@ -53,14 +51,14 @@ final class UserController{
     
     func getPicture(req: Request) throws -> ResponseRepresentable{
         let username = try req.parameters.next(String.self)
-        let url = URL(fileURLWithPath: "Resources/User/" + username + ".png")
-        return try Data(contentsOf: url)
-    
+        let url = URL(fileURLWithPath: userPicturepath + username + imageExtantion)
+        do{
+           return try Data(contentsOf: url)
+        }catch{
+            throw Abort(.badRequest, metadata: "No file found")
+        }
     }
 }
-
-
-
 
 
 extension Request {

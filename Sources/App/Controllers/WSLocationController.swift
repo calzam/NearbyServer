@@ -16,10 +16,7 @@ class WSLocationController {
         let user: User = try request.parameters.next()
         print("New WebSocket connected, user:   \(user.userName)")
         LocationRoom.shared.addWebSocket(socket, for: user)
-//        try socket.send("Hello, \(user.userName)!")
         let pingTimer = keepSocketAlive(socket)
-        
-
         
         socket.onText = { webSocket, message in
             let json = try JSON(bytes: message.makeBytes())
