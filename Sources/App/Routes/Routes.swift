@@ -1,25 +1,49 @@
 import Vapor
+import AuthProvider
+import Foundation
 
 extension Droplet {
     func setupRoutes() throws {
-        get("hello") { req in
-            var json = JSON()
-            try json.set("hello", "world")
-            return json
-        }
+        setUpUserRoutes()
+        setUpLoginRoutes()
+        setupTokenProtectedRoutes()
+    }
+    
 
-        get("plaintext") { req in
-            return "Hello, world!"
-        }
+    private func setUpUserRoutes(){
+        let userController = UserController()
+        get("user", User.parameter,  handler: userController.get)
+        post("user", handler: userController.post)
+    }
 
-        // response to requests to /info domain
-        // with a description of the request
-        get("info") { req in
-            return req.description
-        }
+    private func setUpLoginRoutes(){
+        let loginMiddleware = grouped([PasswordAuthenticationMiddleware(User.self)])
+        let loginController = LoginController()
+        loginMiddleware.post("login", handler: loginController.loginUser)
+    }
 
-        get("description") { req in return req.description }
-        
-        try resource("posts", PostController.self)
+    private func setupTokenProtectedRoutes() {
+        let tokenMiddleware = grouped([TokenAuthenticationMiddleware(User.self)])
+        tokenMiddleware.get("me") { req in
+            return try req.user()
+        }
     }
 }
+
+
+
+extension Droplet {
+    public func setupRoom() throws {
+        let socketController = WSLocationController()
+        socket("location_web_socket", User.parameter, handler: socketController.locationSocket)
+    }
+}
+
+/*
+
+ 
+ {
+ "message":"ciaone"
+ }
+ 
+ */
